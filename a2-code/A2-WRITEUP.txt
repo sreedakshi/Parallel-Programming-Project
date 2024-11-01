@@ -1,0 +1,258 @@
+                              ____________
+
+                               A2 WRITEUP
+                              ____________
+
+
+
+
+
+GROUP MEMBERS
+-------------
+
+  - Member 1: Sree Pemma pemma003
+  - Member 2: Swati Rampalli rampa009
+
+  Up to 2 people may collaborate on this assignment. Write names/x.500
+  below. If working alone, leave off Member 2.
+
+  ONLY ONE GROUP MEMBER NEEDS TO SUBMIT TO GRADESCOPE.
+
+
+Problem 1: heat_mpi
+===================
+
+heat_mpi Timing Table
+~~~~~~~~~~~~~~~~~~~~~
+
+  Fill in the following table on measuring the performance of your
+  `heat_mpi' program on the Veggie cluster. Replace 00.00 entries with
+  your actual run times. You can use the provided `heat-run-jobs.sh'
+  script to ease this task.
+
+  -----------------------------
+                 Width         
+   Procs   6400  25600  102400 
+  -----------------------------
+       1  1.11   1.25    1.77 
+       2  1.08   1.13    1.57 
+       4  1.11   1.14    1.43 
+       8  1.06   1.19    1.40 
+      10  1.15   1.16    1.44 
+      16  1.11   1.19    1.46 
+      32  1.26   1.34    1.60 
+      64  1.25   1.40    2.63 
+     128  1.37   1.55    5.81 
+  -----------------------------
+
+
+heat_mpi Discussion Questions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Analyze your table of results and answer the following questions.
+  1. Did using more processors result in speedups?
+
+      Not always, for example with a width of 6400, the timings decreased
+      when increasing the processors from 2 to 4 but then increased when 
+      the processor count went from 4 to 6. 8 processors is the optimal 
+      processor count for this width as the amount of time it takes to run 
+      is at its lowest(1.06). Increasing the number of processors from 
+      10 to 16 generally increases the timings as a higher number of 
+      processors is unnecessary. This hurts performance due to the 
+      communication overhead and the parallelism benefits aren't being 
+      exploited as well as they can be. 
+
+  2. Describe any trends or anomalies you see in the timings and
+     speculate on their causes - e.g. was there are a steady increase in
+     runtimes, steady decrease, or jagged changes in timing?
+
+      For widths of 6400 and 25600, there were sharp timing variations when 
+      increasing the processor count that generally weren't consistent with increasing 
+      or decreasing the number processors. This is exhibited with the timing increase 
+      from 1.06s to 1.15s going from 8 to 10 processors. Furthermore, the timing continuously
+      fluctuates from 1.15s to 1.11s when the processor count increases from to 10 to 12.
+
+      In contrast, processors running on a width of 102400 demonstrated a consistent decrease
+      in timing up until approximately 10 processors before speedup became overpowered
+      through the communication costs of additional processors. At this point, processors 
+      depicted a steady increase in timing. A potential reason for this could also be that because the 
+      distribution amongst processors is vertically, such that each processor has a set number of columns,
+      using a larger number of processors would have a smaller number of cols on each processor. In this sense, 
+      the boundary element computation would be dominating because processors have fewer parallelization 
+      opportunities as they have fewer middle elements. 
+
+
+
+  3. Try to explain how number of processors and problem size seem to
+     affect runtimes/speedup in the problem. Consider what happens on an
+     MPI run when the original host does not have enough processors to
+     available to support running on the original machine and must start
+     communicating with a networked machine mentioned in the `hostfile'.
+
+     Generally, increasing the number of processors on a specified problem size results
+     in speedup due to parallelization of the work. We observed that increasing the processors
+     past an optimal value, however, led to decreased performance because of the communication
+     overhead described earlier. Similarly, increasing the problem size (but maintaining the processor count)
+     resulted in decreased performance as each individual processor has more work to do. 
+
+     When the original host doesn't have enough processors running on the original machine, it needs to reach
+     out to other hosts within the veggie cluster to potentially get other processors to parallelize the workload. 
+     This not only leads to increased communication due to multiple processors but this communication could happen
+     over long distances depending on the location of the different host machines within the cluster. When applying
+     this to the collective communication operations such as MPI_Sendrecv(), this will lead to higher times
+     because processors can be a lot farther away from each other, increasing the communication cost amongst them. 
+
+
+Problem 2: dense_pagerank_mpi
+=============================
+
+dense_pagerank_mpi Timing Table
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Fill in the following table on measuring the performance of your
+  `dense_pagerank_mpi' program on the Veggie cluster. Replace 00.00
+  entries with your actual run times. You can use the provided
+  `dense-pagerank-mpi-jobs.sh' script to ease this task.
+
+  The columns are for the notredame-XXXX.txt graphs
+  ----------------------------
+                  size        
+   Procs    501   8000  16000 
+  ----------------------------
+       1  1.35   7.40  30.64 
+       2  0.98   5.11  17.81 
+       4  0.99   3.36  12.92 
+       8  1.05   2.66  8.94 
+      10  1.03   2.85  8.41 
+      16  1.11   2.62  7.62 
+      32  1.13   2.85  7.79 
+      64  1.26   3.49  7.90 
+     128  1.28   3.45  7.96 
+  ----------------------------
+
+
+dense_pagerank_mpi Discussion Questions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Analyze your table of results and answer the following questions.
+  1. Did using more processors result in speedups?
+         For a size of 16000, increasing the number of processors resulted in speedups up until it reached
+         a processor count of 32, but for the most part there was a steady decrease. The optimal number of 
+         processors for this size is 16 as this is where the time is at its lowest. For sizes 501 and 8000, 
+         using more processors did not result in a steady speedup but instead displayed a jagged pattern by 
+         decreasing and increasing the amount of time it took until 32 procs where it just continued to increase.
+
+  2. Describe any trends or anomalies you see in the timings and
+     speculate on their causes - e.g. was there are a steady increase in
+     runtimes, steady decrease, or jagged changes in timing?
+
+         The timings displayed a jagged pattern, as mentioned in the previous question for widths 501 and 8000. For a 
+         width of 16000, the times steadily decrease until proc count of 32 and then steadily increase. The reason for these
+         patterns could be the fact that mpi calls can result in speedup of serial code if the number of processors are increased
+         (up to a certain point). Incorporating sendrecv calls and functions such as scatter, allgather, and broadcast decrease the 
+         amount of time it takes due to the parallelization mpi calls offer.
+
+         The reason the timings are bigger for size 16000, the mpi calls have to consolidate a large amount of data and then send out 
+         this data to the other procs and this is a big communication overhead as the data sizes are large. The timings are generally consistently
+         decreasing because each processor has a larger chunk of data to work on on its own. It can also exploit parallelism better.
+
+  3. Try to explain how number of processors and problem size seem to
+     affect runtimes/speedup in the problem. Consider what happens on an
+     MPI run when the original host does not have enough processors to
+     available to support running on the original machine and must start
+     communicating with a networked machine mentioned in the `hostfile'.
+     
+     	For similar reasons stated in the last problem, when there aren't enough processors on the original host, 
+     	this induces potential communication to other processors greater distances away from each other that might 
+     	even be on a cluster separate from Veggie. When considering the specific MPI calls of MPI_Allgather and 
+     	MPI_Scatter in this case, the communication will be a lot higher since the all the data from every processor 
+     	will be consolidated and sent out to every processor again. This is represented in our timing table which has 
+     	increased times for the later processors in comparison to the times in problem 1. 
+
+
+Problem 3: dense_pagerank_omp
+=============================
+
+dense_pagerank_omp Timing Table
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Fill in the following table on measuring the performance of your
+  `dense_pagerank_omp' program on the Veggie cluster. Replace 00.00
+  entries with your actual run times. You can use the provided
+  `dense-pagerank-omp-jobs.sh' script to ease this task.
+
+  The columns are for the notredame-XXXX.txt graphs
+  ----------------------------
+                  size        
+   Procs    501   8000  16000 
+  ----------------------------
+       1  0.04   5.07  22.87 
+       2  0.03   2.91  14.35
+       4  0.02   1.67  7.96 
+       8  0.02   1.05  4.98 
+      10  0.02   0.93  4.64 
+      16  0.01   0.79  3.24 
+      32  0.02   0.79  3.25 
+      64  0.10   0.96  16.34 
+     128  0.32   5.22  13.13 
+  ----------------------------
+
+
+dense_pagerank_omp Discussion Questions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Analyze your table of results and answer the following questions.
+  1. Did using more processors result in speedups?
+
+      This was the case across the three different problem sizes, but it was most
+      visible for sizes 8000 and 160000. The timings remained very close to each other for a problem size
+      of 501 regardless of increase in processor count.
+
+  2. Describe any trends or anomalies you see in the timings and
+     speculate on their causes - e.g. was there are a steady increase in
+     runtimes, steady decrease, or jagged changes in timing?
+
+     For a problem size of 501, increasing the processor count didn't have a significant effect on 
+     increasing speedup as demonstrated by the very similar timings within the column. For a considerably 
+     smaller workload/problem size, it could have been more beneficial to have fewer processors running to
+     ensure that the parallelism benefits aren't overweighed by the overhead caused multiple processor overhead
+     and synchronization. 
+
+     This wasn't the case for problem sizes of 8000 and 16000 where increasing the processor count led to a 
+     consistent decrease in timing until about 32 processors were used. After this point, timings for all processors 
+     increased steadily, except for the case with 64 processors and a problem size of 16000, which led to 
+     a sharp increase in timing. This could be because utilizing more processors past the point how many are
+     available to you causes increased communication with procesors on clusters outside of Veggie as well. 
+
+  3. Try to explain how number of processors and problem size seem to
+     affect runtimes/speedup in the problem. Consider the number of
+     physical cores which are on the Veggie machines (obtainable via
+     `lscpu').
+
+     Increasing the number of processors past a certain limit appears to hurt parallelism more
+     than help it. For example, increasing the processor count from 64 to 128 causes the timing 
+     to also increase from 0.10 to 0.32. Likewise, increasing problem size increase timing overall. 
+     Utilizing the 'lscpu' tool, this occurs due to the limited number of cores available on each veggie 
+     machine. Specifically, exceeding the number of processors available on each machine means you 
+     essentially have to ask/use processors that are not available to you, which might be found on another
+     cluster entirely. As the number of cores for broccoli is 40, utilizing more than 40 processors such as 64
+     or 128 is where speedup begins to increase, confirmed in our timing table results as well. 
+
+
+
+  4. Compare these timings to your MPI results (if available) and
+     indicate whether the distributed memory or shared memory seems
+     favorable according to your results.
+
+     As the timings for pragma omp statements are considerably faster than that of MPI calls, 
+     shared memory is more favorable. Even though shared memory requires more synchronization and 
+     protection of shared variables, this is somewhat internally mediated by local variables created
+     by the pragma omp threads that are spawned. Additionally, there is not as much communication across
+     multiple processors that cause more overhead and communication cost with distributed memory systems. 
+
+
+OPTIONAL MAKEUP Problem 4
+=========================
+
+  If working on the optional MAKEUP problem, add information described
+  in the assignment specification here.

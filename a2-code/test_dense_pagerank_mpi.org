@@ -1,0 +1,1067 @@
+#+title: Tests for dense_pagerank_mpi program
+
+# set basic options such as the prefix for test output files and the
+# timeout before testy declares failure.
+#+TESTY: TIMEOUT=45s
+#+TESTY: PREFIX=dense-pagerank-mpi
+#+TESTY: USE_VALGRIND=0
+
+# Set up a command to run valgrind under mpirun checking for a variety
+# of errors but suppressing those coming from the mpi library
+#+TESTY: export RUNVALGRIND='valgrind'
+#+TESTY: RUNVALGRIND+=' --leak-check=full --show-leak-kinds=all --track-origins=yes'
+#+TESTY: RUNVALGRIND+=' --suppressions=test_mpi.supp --error-exitcode=17'
+#+TESTY: RUNVALGRIND+=' --keep-debuginfo=yes'
+#+TESTY: CHECKRETURN=1
+
+# Set the MPIOPTS variable - on Gradescope must allow oversubscription
+# (only 1 proc available) and running as root (Docker containers run
+# as root by default).
+#+TESTY: source ./mpiopts.sh
+#+TESTY: MPIOPTS+=" --oversubscribe --allow-run-as-root"
+
+# Gradescope OpenMPI is old and has an unfixable bug in it that must
+# be filtered from output
+#+TESTY: POST_FILTER='grep -v "Read -1, expected"'
+
+* Procs=1 graph=tiny-20.txt
+Runs dense_pagerank_mpi with a single proc on the smallest graph
+available.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: program='mpirun $MPIOPTS -np 1 ./dense_pagerank_mpi graphs/tiny-20.txt 0.85'
+
+#+BEGIN_SRC text
+Loaded graphs/tiny-20.txt: 20 rows, 200 nonzeros
+Beginning Computation
+
+ITER     DIFF     NORM
+  1: 1.78e-01 1.00e+00
+  2: 3.85e-02 1.00e+00
+  3: 7.27e-03 1.00e+00
+  4: 1.32e-03 1.00e+00
+  5: 2.12e-04 1.00e+00
+CONVERGED
+
+PAGE RANKS
+0.04779640
+0.04147775
+0.04912589
+0.03965692
+0.05845908
+0.04394957
+0.02513647
+0.04369224
+0.05522195
+0.07147504
+0.05889092
+0.06569723
+0.05264261
+0.03913282
+0.05423814
+0.05833793
+0.04308603
+0.06827848
+0.03697897
+0.04672553
+#+END_SRC
+
+* Procs=1 graph=tiny-20.txt Valgrind
+Same as test 1 except the program is run under Valgrind to check for
+memory problems. This requires the presence of the file test_mpi.supp,
+a suppression file for Valgrind which will omit errors from OpenMPI or
+the Linux Kernel.  Valgrind is set up to return exit code 17 if it
+detects problems and output is shown if this happens. If no memory
+errors are detected and the program returns exit code 0, the test is
+passed. Since every run under Valgrind can produce different output,
+there is no expected output for this, only checks for detection of
+errors. 
+
+#+TESTY: skipdiff=1
+#+TESTY: program='mpirun $MPIOPTS -np 1 $RUNVALGRIND ./dense_pagerank_mpi graphs/tiny-20.txt 0.85'
+#+BEGIN_SRC text
+Output checking skipped as Valgrind return code will indicate problems
+#+END_SRC
+
+* Procs=2 graph=tiny-20.txt
+Runs dense_pagerank_mpi with 2 procs on the smallest graph
+available.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: program='mpirun $MPIOPTS -np 2 ./dense_pagerank_mpi graphs/tiny-20.txt 0.85'
+
+#+BEGIN_SRC text
+Loaded graphs/tiny-20.txt: 20 rows, 200 nonzeros
+Beginning Computation
+
+ITER     DIFF     NORM
+  1: 1.78e-01 1.00e+00
+  2: 3.85e-02 1.00e+00
+  3: 7.27e-03 1.00e+00
+  4: 1.32e-03 1.00e+00
+  5: 2.12e-04 1.00e+00
+CONVERGED
+
+PAGE RANKS
+0.04779640
+0.04147775
+0.04912589
+0.03965692
+0.05845908
+0.04394957
+0.02513647
+0.04369224
+0.05522195
+0.07147504
+0.05889092
+0.06569723
+0.05264261
+0.03913282
+0.05423814
+0.05833793
+0.04308603
+0.06827848
+0.03697897
+0.04672553
+#+END_SRC
+
+* Procs=2 graph=tiny-20.txt Valgrind
+Runs dense_pagerank_mpi with 2 procs on the smallest graph available.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: skipdiff=1
+#+TESTY: program='mpirun $MPIOPTS -np 2 $RUNVALGRIND ./dense_pagerank_mpi graphs/tiny-20.txt 0.85'
+
+#+BEGIN_SRC text
+Output checking skipped as Valgrind return code will indicate problems
+#+END_SRC
+
+* Procs=3 graph=tiny-20.txt
+Runs dense_pagerank_mpi with 3 procs on the smallest graph
+available. This means that the graph is not evenly divisible by the
+number of processors so requires some care.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: program='mpirun $MPIOPTS -np 3 ./dense_pagerank_mpi graphs/tiny-20.txt 0.85'
+
+#+BEGIN_SRC text
+Loaded graphs/tiny-20.txt: 20 rows, 200 nonzeros
+Beginning Computation
+
+ITER     DIFF     NORM
+  1: 1.78e-01 1.00e+00
+  2: 3.85e-02 1.00e+00
+  3: 7.27e-03 1.00e+00
+  4: 1.32e-03 1.00e+00
+  5: 2.12e-04 1.00e+00
+CONVERGED
+
+PAGE RANKS
+0.04779640
+0.04147775
+0.04912589
+0.03965692
+0.05845908
+0.04394957
+0.02513647
+0.04369224
+0.05522195
+0.07147504
+0.05889092
+0.06569723
+0.05264261
+0.03913282
+0.05423814
+0.05833793
+0.04308603
+0.06827848
+0.03697897
+0.04672553
+#+END_SRC
+
+* Procs=3 graph=tiny-20.txt Valgrind
+Runs dense_pagerank_mpi with 3 procs on the smallest graph available
+under Valgrind.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: skipdiff=1
+#+TESTY: program='mpirun $MPIOPTS -np 3 $RUNVALGRIND ./dense_pagerank_mpi graphs/tiny-20.txt 0.85'
+
+#+BEGIN_SRC text
+Output checking skipped as Valgrind return code will indicate problems
+#+END_SRC
+
+* Procs=4 graph=notredame-100.txt
+Runs dense_pagerank_mpi with 4 procs on a small graph. The larger
+graph may expose some memory problems in programs.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: program='mpirun $MPIOPTS -np 4 ./dense_pagerank_mpi graphs/notredame-100.txt 0.85'
+
+#+BEGIN_SRC text
+Loaded graphs/notredame-100.txt: 100 rows, 389 nonzeros
+Beginning Computation
+
+ITER     DIFF     NORM
+  1: 9.71e-01 1.00e+00
+  2: 5.18e-01 1.00e+00
+  3: 1.98e-01 1.00e+00
+  4: 6.40e-02 1.00e+00
+  5: 2.95e-02 1.00e+00
+  6: 1.62e-02 1.00e+00
+  7: 1.18e-02 1.00e+00
+  8: 8.67e-03 1.00e+00
+  9: 6.39e-03 1.00e+00
+ 10: 4.78e-03 1.00e+00
+ 11: 3.58e-03 1.00e+00
+ 12: 2.67e-03 1.00e+00
+ 13: 2.00e-03 1.00e+00
+ 14: 1.50e-03 1.00e+00
+ 15: 1.12e-03 1.00e+00
+ 16: 8.39e-04 1.00e+00
+CONVERGED
+
+PAGE RANKS
+0.09694402
+0.07765430
+0.00150000
+0.00998178
+0.07749171
+0.02281839
+0.02260034
+0.01639661
+0.00997587
+0.00378510
+0.03306280
+0.03417278
+0.00150000
+0.00150000
+0.00292173
+0.01553251
+0.00150000
+0.00562037
+0.00562037
+0.02312788
+0.01900751
+0.00777592
+0.00150000
+0.02312788
+0.02312788
+0.02312788
+0.02312788
+0.02312788
+0.00562037
+0.00704210
+0.00942792
+0.00150000
+0.00292173
+0.00150000
+0.00508359
+0.00292173
+0.02456906
+0.00150000
+0.00150000
+0.00150000
+0.00416256
+0.00292173
+0.00292173
+0.00150000
+0.00150000
+0.00150000
+0.00172587
+0.00440923
+0.00508359
+0.00508359
+0.00483995
+0.00190476
+0.00260870
+0.00292173
+0.00358544
+0.00546272
+0.00601773
+0.00857724
+0.00455701
+0.00313528
+0.00545431
+0.00508359
+0.00508359
+0.00150000
+0.00436407
+0.00211846
+0.00211846
+0.00339346
+0.03120060
+0.03848187
+0.01147732
+0.00358544
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.01634760
+0.01634760
+0.00508359
+0.00150000
+0.00150000
+0.00150000
+0.02003697
+0.00645846
+0.00864675
+0.00645846
+0.00645846
+0.00645846
+0.00150000
+0.00875300
+0.00749625
+0.00645846
+#+END_SRC
+
+* Procs=4 graph=notredame-100.txt Valgrind
+Runs dense_pagerank_mpi with 4 procs on a small graph.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: skipdiff=1
+#+TESTY: program='mpirun $MPIOPTS -np 4 $RUNVALGRIND ./dense_pagerank_mpi graphs/notredame-100.txt 0.85'
+
+#+BEGIN_SRC text
+Output checking skipped as Valgrind return code will indicate problems
+#+END_SRC
+
+* Procs=7 graph=notredame-100.txt + Valgrind
+Runs both normally and with Valgrind with 7 processors.
+
+** Normal Run
+Runs dense_pagerank_mpi with 7 procs on a small graph. This means that
+the graph is not evenly divisible by the number of processors so
+requires some care.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: program='mpirun $MPIOPTS -np 7 ./dense_pagerank_mpi graphs/notredame-100.txt 0.85'
+
+#+BEGIN_SRC text
+Loaded graphs/notredame-100.txt: 100 rows, 389 nonzeros
+Beginning Computation
+
+ITER     DIFF     NORM
+  1: 9.71e-01 1.00e+00
+  2: 5.18e-01 1.00e+00
+  3: 1.98e-01 1.00e+00
+  4: 6.40e-02 1.00e+00
+  5: 2.95e-02 1.00e+00
+  6: 1.62e-02 1.00e+00
+  7: 1.18e-02 1.00e+00
+  8: 8.67e-03 1.00e+00
+  9: 6.39e-03 1.00e+00
+ 10: 4.78e-03 1.00e+00
+ 11: 3.58e-03 1.00e+00
+ 12: 2.67e-03 1.00e+00
+ 13: 2.00e-03 1.00e+00
+ 14: 1.50e-03 1.00e+00
+ 15: 1.12e-03 1.00e+00
+ 16: 8.39e-04 1.00e+00
+CONVERGED
+
+PAGE RANKS
+0.09694402
+0.07765430
+0.00150000
+0.00998178
+0.07749171
+0.02281839
+0.02260034
+0.01639661
+0.00997587
+0.00378510
+0.03306280
+0.03417278
+0.00150000
+0.00150000
+0.00292173
+0.01553251
+0.00150000
+0.00562037
+0.00562037
+0.02312788
+0.01900751
+0.00777592
+0.00150000
+0.02312788
+0.02312788
+0.02312788
+0.02312788
+0.02312788
+0.00562037
+0.00704210
+0.00942792
+0.00150000
+0.00292173
+0.00150000
+0.00508359
+0.00292173
+0.02456906
+0.00150000
+0.00150000
+0.00150000
+0.00416256
+0.00292173
+0.00292173
+0.00150000
+0.00150000
+0.00150000
+0.00172587
+0.00440923
+0.00508359
+0.00508359
+0.00483995
+0.00190476
+0.00260870
+0.00292173
+0.00358544
+0.00546272
+0.00601773
+0.00857724
+0.00455701
+0.00313528
+0.00545431
+0.00508359
+0.00508359
+0.00150000
+0.00436407
+0.00211846
+0.00211846
+0.00339346
+0.03120060
+0.03848187
+0.01147732
+0.00358544
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.00150000
+0.01634760
+0.01634760
+0.00508359
+0.00150000
+0.00150000
+0.00150000
+0.02003697
+0.00645846
+0.00864675
+0.00645846
+0.00645846
+0.00645846
+0.00150000
+0.00875300
+0.00749625
+0.00645846
+#+END_SRC
+
+** Valgrind Run
+Runs dense_pagerank_mpi with 7 procs on a small graph.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: skipdiff=1
+#+TESTY: program='mpirun $MPIOPTS -np 4 $RUNVALGRIND ./dense_pagerank_mpi graphs/notredame-100.txt 0.85'
+
+#+BEGIN_SRC text
+Output checking skipped as Valgrind return code will indicate problems
+#+END_SRC
+
+* Procs=8 graph=notredame-501.txt + Valgrind
+Runs both normally and with Valgrind with 8 processors on a modest
+graph.
+
+** Normal Run
+Runs dense_pagerank_mpi with 8 procs on a modest sized graph.  The
+graph is not evenly divisible by the number of processors so requires
+some care.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: program='mpirun $MPIOPTS -np 8 ./dense_pagerank_mpi graphs/notredame-501.txt 0.85'
+
+#+BEGIN_SRC text
+Loaded graphs/notredame-501.txt: 501 rows, 1957 nonzeros
+Beginning Computation
+
+ITER     DIFF     NORM
+  1: 1.35e+00 1.00e+00
+  2: 9.42e-01 1.00e+00
+  3: 6.38e-01 1.00e+00
+  4: 4.67e-01 1.00e+00
+  5: 3.52e-01 1.00e+00
+  6: 2.75e-01 1.00e+00
+  7: 2.23e-01 1.00e+00
+  8: 1.80e-01 1.00e+00
+  9: 1.47e-01 1.00e+00
+ 10: 1.19e-01 1.00e+00
+ 11: 9.65e-02 1.00e+00
+ 12: 7.84e-02 1.00e+00
+ 13: 6.38e-02 1.00e+00
+ 14: 5.20e-02 1.00e+00
+ 15: 4.23e-02 1.00e+00
+ 16: 3.45e-02 1.00e+00
+ 17: 2.81e-02 1.00e+00
+ 18: 2.29e-02 1.00e+00
+ 19: 1.86e-02 1.00e+00
+ 20: 1.52e-02 1.00e+00
+ 21: 1.24e-02 1.00e+00
+ 22: 1.01e-02 1.00e+00
+ 23: 8.21e-03 1.00e+00
+ 24: 6.69e-03 1.00e+00
+ 25: 5.45e-03 1.00e+00
+ 26: 4.44e-03 1.00e+00
+ 27: 3.62e-03 1.00e+00
+ 28: 2.95e-03 1.00e+00
+ 29: 2.40e-03 1.00e+00
+ 30: 1.96e-03 1.00e+00
+ 31: 1.59e-03 1.00e+00
+ 32: 1.30e-03 1.00e+00
+ 33: 1.06e-03 1.00e+00
+ 34: 8.63e-04 1.00e+00
+CONVERGED
+
+PAGE RANKS
+0.03022417
+0.01270834
+0.00029940
+0.00112734
+0.01069473
+0.00311174
+0.00917494
+0.01192800
+0.00278339
+0.00304963
+0.02020755
+0.01384721
+0.00080838
+0.00069370
+0.00038019
+0.01366909
+0.00611471
+0.00275902
+0.00063961
+0.03391077
+0.24323219
+0.00047692
+0.00029940
+0.00452448
+0.00452448
+0.00452448
+0.00452448
+0.00452448
+0.00035109
+0.00043188
+0.00043964
+0.00029940
+0.00046502
+0.00107815
+0.00072443
+0.00041422
+0.00174633
+0.00033343
+0.00029940
+0.00029940
+0.00158892
+0.00038019
+0.00038019
+0.00029940
+0.00029940
+0.00029940
+0.00035363
+0.00067710
+0.00066121
+0.00066121
+0.00074098
+0.00049648
+0.00146742
+0.00038019
+0.00043079
+0.00065482
+0.00072251
+0.00102958
+0.00063135
+0.00055056
+0.00095749
+0.00066121
+0.00066121
+0.00029940
+0.00063867
+0.00035369
+0.00035369
+0.00060818
+0.00221757
+0.00640675
+0.00461426
+0.00043079
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00219461
+0.00219461
+0.00048278
+0.00029940
+0.00029940
+0.00029940
+0.00320962
+0.00079773
+0.00101370
+0.00079773
+0.00086236
+0.00094760
+0.00029940
+0.00106672
+0.00175669
+0.00079773
+0.00285630
+0.00420207
+0.00099270
+0.00057080
+0.00029940
+0.00036954
+0.00038019
+0.00198770
+0.00029940
+0.00038423
+0.00048965
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00038947
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00066121
+0.00029940
+0.00040039
+0.00046098
+0.00029940
+0.00029940
+0.00029940
+0.00046502
+0.00029940
+0.00333951
+0.00029940
+0.00038019
+0.00052174
+0.00060657
+0.00044230
+0.00069793
+0.00064389
+0.00216344
+0.00062431
+0.00048965
+0.00038019
+0.00029940
+0.00042665
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00031960
+0.00029940
+0.00273426
+0.00029940
+0.00029940
+0.00029940
+0.00038019
+0.00033343
+0.00029940
+0.00049507
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00073794
+0.00029940
+0.00048278
+0.00046502
+0.00048278
+0.00029940
+0.00029940
+0.00166840
+0.00100472
+0.00549689
+0.00029940
+0.00171220
+0.00038019
+0.00038019
+0.00096123
+0.00038019
+0.00038019
+0.00068524
+0.00054360
+0.00038019
+0.00048681
+0.00029940
+0.00119290
+0.00075957
+0.00173579
+0.00029940
+0.00029940
+0.00053050
+0.00029940
+0.00029940
+0.00029940
+0.00070805
+0.00078471
+0.00029940
+0.00140127
+0.00364706
+0.00029940
+0.00053050
+0.00029940
+0.00029940
+0.00029940
+0.00436713
+0.00066121
+0.00029940
+0.00029940
+0.00107789
+0.00029940
+0.00063579
+0.00029940
+0.00029940
+0.00029940
+0.00052070
+0.00038019
+0.00029940
+0.00055914
+0.00061501
+0.00038019
+0.00057080
+0.00029940
+0.00029940
+0.00066121
+0.00377416
+0.00174633
+0.00029940
+0.00174633
+0.00252407
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00088191
+0.00048681
+0.00445551
+0.01138144
+0.00518223
+0.00475330
+0.01170832
+0.01962603
+0.00488990
+0.00039258
+0.00039258
+0.00312127
+0.00097009
+0.00097009
+0.00029940
+0.00097009
+0.00087692
+0.00087692
+0.00039258
+0.00087692
+0.00097408
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00135380
+0.00097408
+0.00029940
+0.00029940
+0.00040039
+0.00029940
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00029940
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00041200
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00029940
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00029940
+0.00043964
+0.00029940
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043188
+0.00043964
+0.00043964
+0.00043964
+0.00056428
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00043964
+0.00029940
+0.00043964
+0.00043964
+0.00052070
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00043964
+0.00043448
+0.00029940
+0.00043964
+0.00029940
+0.00029940
+0.00038019
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00029940
+0.00066121
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00036302
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00066121
+0.00044381
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00043964
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00075109
+0.00235189
+0.00052070
+0.00029940
+0.00041200
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00408842
+0.00235189
+0.00235189
+0.00043964
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00029940
+0.00043188
+0.00235189
+0.00043964
+0.00038019
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00038019
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00206396
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00052070
+0.00235189
+0.00038019
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00235189
+0.00029940
+0.00235189
+0.00235189
+0.00235189
+#+END_SRC
+
+** Valgrind Run
+Runs dense_pagerank_mpi with 8 on a modest graph.
+
+NOTE: the program must exit / return with status 0 to pass.
+
+#+TESTY: skipdiff=1
+#+TESTY: program='mpirun $MPIOPTS -np 8 $RUNVALGRIND ./dense_pagerank_mpi graphs/notredame-501.txt 0.85'
+
+#+BEGIN_SRC text
+Output checking skipped as Valgrind return code will indicate problems
+#+END_SRC
+
+
+
+

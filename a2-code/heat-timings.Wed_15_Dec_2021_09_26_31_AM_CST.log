@@ -1,0 +1,136 @@
+Heat Timings on host csel-atlas for Wed 15 Dec 2021 09:26:31 AM CST
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 1 ./heat_mpi 500 6400 0
+runtime: procs 1 width 6400 realtime 5.56
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 2 ./heat_mpi 500 6400 0
+runtime: procs 2 width 6400 realtime 1.41
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 4 ./heat_mpi 500 6400 0
+runtime: procs 4 width 6400 realtime 1.36
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 8 ./heat_mpi 500 6400 0
+runtime: procs 8 width 6400 realtime 1.43
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 10 ./heat_mpi 500 6400 0
+runtime: procs 10 width 6400 realtime 1.49
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 16 ./heat_mpi 500 6400 0
+runtime: procs 16 width 6400 realtime 1.54
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 32 ./heat_mpi 500 6400 0
+runtime: procs 32 width 6400 realtime 1.55
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 64 ./heat_mpi 500 6400 0
+runtime: procs 64 width 6400 realtime 1.66
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 128 ./heat_mpi 500 6400 0
+runtime: procs 128 width 6400 realtime 1.67
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 1 ./heat_mpi 500 12800 0
+runtime: procs 1 width 12800 realtime 1.44
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 2 ./heat_mpi 500 12800 0
+runtime: procs 2 width 12800 realtime 1.49
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 4 ./heat_mpi 500 12800 0
+runtime: procs 4 width 12800 realtime 1.47
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 8 ./heat_mpi 500 12800 0
+runtime: procs 8 width 12800 realtime 1.49
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 10 ./heat_mpi 500 12800 0
+runtime: procs 10 width 12800 realtime 1.55
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 16 ./heat_mpi 500 12800 0
+runtime: procs 16 width 12800 realtime 1.55
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 32 ./heat_mpi 500 12800 0
+runtime: procs 32 width 12800 realtime 1.61
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 64 ./heat_mpi 500 12800 0
+runtime: procs 64 width 12800 realtime 1.60
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 128 ./heat_mpi 500 12800 0
+runtime: procs 128 width 12800 realtime 1.76
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 1 ./heat_mpi 500 25600 0
+runtime: procs 1 width 25600 realtime 1.60
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 2 ./heat_mpi 500 25600 0
+runtime: procs 2 width 25600 realtime 1.51
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 4 ./heat_mpi 500 25600 0
+runtime: procs 4 width 25600 realtime 1.51
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 8 ./heat_mpi 500 25600 0
+runtime: procs 8 width 25600 realtime 1.49
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 10 ./heat_mpi 500 25600 0
+runtime: procs 10 width 25600 realtime 1.66
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 16 ./heat_mpi 500 25600 0
+runtime: procs 16 width 25600 realtime 1.59
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 32 ./heat_mpi 500 25600 0
+runtime: procs 32 width 25600 realtime 1.70
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 64 ./heat_mpi 500 25600 0
+runtime: procs 64 width 25600 realtime 1.76
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 128 ./heat_mpi 500 25600 0
+runtime: procs 128 width 25600 realtime 1.75
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 1 ./heat_mpi 500 51200 0
+runtime: procs 1 width 51200 realtime 1.83
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 2 ./heat_mpi 500 51200 0
+runtime: procs 2 width 51200 realtime 1.71
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 4 ./heat_mpi 500 51200 0
+runtime: procs 4 width 51200 realtime 1.59
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 8 ./heat_mpi 500 51200 0
+runtime: procs 8 width 51200 realtime 1.60
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 10 ./heat_mpi 500 51200 0
+runtime: procs 10 width 51200 realtime 1.72
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 16 ./heat_mpi 500 51200 0
+runtime: procs 16 width 51200 realtime 1.64
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 32 ./heat_mpi 500 51200 0
+runtime: procs 32 width 51200 realtime 1.87
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 64 ./heat_mpi 500 51200 0
+runtime: procs 64 width 51200 realtime 2.79
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 128 ./heat_mpi 500 51200 0
+runtime: procs 128 width 51200 realtime 1.86
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 1 ./heat_mpi 500 102400 0
+runtime: procs 1 width 102400 realtime 2.26
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 2 ./heat_mpi 500 102400 0
+runtime: procs 2 width 102400 realtime 1.97
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 4 ./heat_mpi 500 102400 0
+runtime: procs 4 width 102400 realtime 1.76
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 8 ./heat_mpi 500 102400 0
+runtime: procs 8 width 102400 realtime 1.84
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 10 ./heat_mpi 500 102400 0
+runtime: procs 10 width 102400 realtime 1.72
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 16 ./heat_mpi 500 102400 0
+runtime: procs 16 width 102400 realtime 1.86
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 32 ./heat_mpi 500 102400 0
+runtime: procs 32 width 102400 realtime 1.94
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 64 ./heat_mpi 500 102400 0
+runtime: procs 64 width 102400 realtime 3.02
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 128 ./heat_mpi 500 102400 0
+runtime: procs 128 width 102400 realtime 6.65
+

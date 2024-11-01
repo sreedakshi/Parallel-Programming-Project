@@ -1,0 +1,21 @@
+Heat Timings on host csel-carrot for Mon 13 Dec 2021 05:09:12 PM CST
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 1 ./heat_mpi 500 6400 0
+Command exited with non-zero status 1
+runtime: procs 1 width 6400 realtime 71.18
+
+mpirun --mca opal_warn_on_missing_libcuda 0 -hostfile hostfile-veggie-ip.txt -np 2 ./heat_mpi 500 6400 0
+mpirun: Forwarding signal 20 to job
+--------------------------------------------------------------------------
+ORTE does not know how to route a message to the specified daemon
+located on the indicated node:
+
+  my node:   csel-carrot
+  target node:  128.101.34.54
+
+This is usually an internal programming error that should be
+reported to the developers. In the meantime, a workaround may
+be to set the MCA param routed=direct on the command line or
+in your environment. We apologize for the problem.
+--------------------------------------------------------------------------
+[csel-carrot:4116070] 3 more processes have sent help message help-errmgr-base.txt / no-path
+[csel-carrot:4116070] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
